@@ -28,7 +28,12 @@ def printSeatingPlan(seats):
 def bookSeat(seats):
     print("Current seating plan:")
     printSeatingPlan(seats)
-    howManySeats= int(input("how many seats do you want to book? "))
+    try:
+        howManySeats= int(input("how many seats do you want to book? "))
+    except (IndexError, ValueError):
+        print("Invalid input format. Please use integers.")
+        bookingFunction()
+    
     personPrices = {
         "adult": { 
             "name": 'a',
@@ -47,45 +52,57 @@ def bookSeat(seats):
             "price": 15.00
         }
     }
-    
+
     results = []
 
+    if howManySeats > 0:
+        makingBooking(results,personPrices,howManySeats,seats)
+    else:
+        print("you have not entered an integer above 0. Please try again")
+        bookingFunction()
+
+
+
+def makingBooking(results,personPrices,howManySeats,seats):
+
+    howManySeats = int(howManySeats)
     # Correcting the error by ensuring proper conversion
     while howManySeats > 0:
-        print(howManySeats)
         selection = input("Choose a seat (e.g., 2D): ")
-        typePersonInput = input("If seat is for adult type: A\nIf seat is for a child type: C\nIf seat is for a student type: S\nIf seat is for a concession holder type: H\n")
-        
-        try:
-            row = int(selection[0]) - 1  # Converts the first character to row index
-            col = ord(selection[1].upper()) - ord('A')  # Converts the letter to column index
+        typePersonInput = input("If seat is for adult type: A\nIf seat is for a child type: C\nIf seat is for a student type: S\nIf seat is for a concession holder type: H\nWho is seat for? ")
+        print(selection[0])
+        if not selection[0].isdigit():
 
-            if 0 <= row < len(seats) and 0 <= col < len(seats[0]):  # Check if the selection is within the range
-                if seats[row][col] == 0:
-                    # Check if typePersonInput is in person prices
-                    for staff_id, record in personPrices.items():
-                        if typePersonInput.lower() in record["name"].split()[-1].lower():
-                            seats[row][col] = 1
-                            results.append(record)
-                            howManySeats = howManySeats - 1
-                            print(howManySeats)
-                            print("Seat booked successfully!\n")
-                            print(results)
-                    else:
-                        print("Invalid type of person input. Please try again")
-                else:
-                    print("Sorry, that seat is already taken.\n")
-            else:
-                print("Invalid seat selection.\n")
-        except (IndexError, ValueError):
             print("Invalid input format. Please use the format <RowNumber><ColumnLetter> (e.g., 2D).\n")
+            makingBooking(results,personPrices,howManySeats,seats)
+   
+        else: 
+            try:
+                row = int(selection[0]) - 1  # Converts the first character to row index
+                col = ord(selection[1].upper()) - ord('A')  # Converts the letter to column index
 
-        print("Updated seating plan:")
-        printSeatingPlan(seats)
-    programFunction()
+                if 0 <= row < len(seats) and 0 <= col < len(seats[0]):  # Check if the selection is within the range
+                    if seats[row][col] == 0:
+                        # Check if typePersonInput is in person prices
+                        for staff_id, record in personPrices.items():
+                            if typePersonInput.lower() in record["name"].split()[-1].lower():
+                                seats[row][col] = 1
+                                results.append(record)
+                                howManySeats -= 1
+                                print("Seat booked successfully!\n")
+                                break
+                        else:
+                            print("Invalid type of person input. Please try again")
+                            continue  # Skip to the next iteration if typePersonInput is invalid
+                    else:
+                        print("Sorry, that seat is already taken.\n")
+                else:
+                    print("Invalid seat selection.\n")
+            except (IndexError, ValueError):
+                print("Invalid input format. Please use the format <RowNumber><ColumnLetter> (e.g., 2D).\n")
 
-
-
+            print("Updated seating plan:")
+            printSeatingPlan(seats)
 
 def cancelFunction():
     pass

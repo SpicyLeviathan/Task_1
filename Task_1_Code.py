@@ -66,6 +66,7 @@ def bookSeat(seats):
 def makingBooking(results,personPrices,howManySeats,seats):
 
     howManySeats = int(howManySeats)
+    totalSeats = howManySeats
     # Correcting the error by ensuring proper conversion
     while howManySeats > 0:
         selection = input("Choose a seat (e.g., 2D): ")
@@ -103,6 +104,28 @@ def makingBooking(results,personPrices,howManySeats,seats):
 
             print("Updated seating plan:")
             printSeatingPlan(seats)
+    
+    receiptFunction(results, totalSeats)
+
+def receiptFunction(results,totalSeats):
+    price = 0
+    for result in results:
+        result = str(result).split()
+        print(result)
+        resultTypePerson = result[1]
+        print(resultTypePerson)
+        resultTypePerson = resultTypePerson.replace("h","Concession Holder").replace("a","Adult").replace("c","Child").replace("s","Student")
+        print(resultTypePerson)
+
+        resultPrice = result[3]
+        resultPrice = str(resultPrice).replace("}","")
+        resultPrice = float(resultPrice)
+        print(resultPrice)
+
+        price = price + resultPrice
+
+    print(f"you have booked {totalSeats}. This will cost ${price}\nA reciept will be sent to you soon.")
+
 
 def cancelFunction():
     pass

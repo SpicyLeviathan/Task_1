@@ -67,6 +67,7 @@ def makingBooking(results,personPrices,howManySeats,seats):
 
     howManySeats = int(howManySeats)
     totalSeats = howManySeats
+    seatsBooked = []
     # Correcting the error by ensuring proper conversion
     while howManySeats > 0:
         selection = input("Choose a seat (e.g., 2D): ")
@@ -91,6 +92,7 @@ def makingBooking(results,personPrices,howManySeats,seats):
                                 results.append(record)
                                 howManySeats -= 1
                                 print("Seat booked successfully!\n")
+                                seatsBooked.append(selection)
                                 break
                         else:
                             print("Invalid type of person input. Please try again")
@@ -105,25 +107,26 @@ def makingBooking(results,personPrices,howManySeats,seats):
             print("Updated seating plan:")
             printSeatingPlan(seats)
     
-    receiptFunction(results, totalSeats)
+    receiptFunction(results, totalSeats, seatsBooked)
 
-def receiptFunction(results,totalSeats):
+def receiptFunction(results,totalSeats, seatsBooked):
+    seatsBooked=str(seatsBooked).replace("[","").replace("]","").replace("'","")
+    file = open("Reciept.txt", "a")
+    file.write(f"======================================\nTotal seats Booked: {totalSeats}\nSeats Booked: {seatsBooked}\n\nType Of Seat - Price - Runing Total\n")
+
     price = 0
     for result in results:
-        result = str(result).split()
-        print(result)
+        result = str(result).split())
         resultTypePerson = result[1]
-        print(resultTypePerson)
-        resultTypePerson = resultTypePerson.replace("h","Concession Holder").replace("a","Adult").replace("c","Child").replace("s","Student")
-        print(resultTypePerson)
-
+        resultTypePerson = resultTypePerson.replace("h","CONCESSION HOLDER").replace("a","ADULT").replace("c","CHILD").replace("s","STUDENT").replace(",","").replace("'","")
         resultPrice = result[3]
         resultPrice = str(resultPrice).replace("}","")
         resultPrice = float(resultPrice)
-        print(resultPrice)
-
         price = price + resultPrice
+        file.write(f"{resultTypePerson} - {resultPrice} - {price}\n")
 
+    file.write(f"\nTotal Price: {price}\n======================================\n\n\n\n")
+    file.close()
     print(f"you have booked {totalSeats}. This will cost ${price}\nA reciept will be sent to you soon.")
 
 

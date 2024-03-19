@@ -1,9 +1,0 @@
-======================================
-Total seats Booked: {variable}
-Seats Booked: {variable}
-
-Type Of Seat - Price - Runing Total
-
-
-Total Price: {variable}
-======================================

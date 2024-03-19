@@ -1,3 +1,8 @@
+import os
+import glob
+import random
+directory= os.getcwd()
+
 def bookingFunction():
     # Initial seating arrangement
     seats = [
@@ -109,14 +114,23 @@ def makingBooking(results,personPrices,howManySeats,seats):
     
     receiptFunction(results, totalSeats, seatsBooked)
 
-def receiptFunction(results,totalSeats, seatsBooked):
+def receiptFunction(results, totalSeats, seatsBooked):
     seatsBooked=str(seatsBooked).replace("[","").replace("]","").replace("'","")
-    file = open("Reciept.txt", "a")
-    file.write(f"======================================\nTotal seats Booked: {totalSeats}\nSeats Booked: {seatsBooked}\n\nType Of Seat - Price - Runing Total\n")
+    randomNumber = ''.join(random.choices('0123456789', k=8))
+    txtFiles = glob.glob(os.path.join(directory, "*.txt"))
+    fileNames = [os.path.basename(txtFile) for txtFile in txtFiles]
+    for fileName in fileNames:
+        fileName.split("_")
+        if fileName[1] == randomNumber:
+            randomNumber = ''.join(random.choices('0123456789', k=8))
+        else:
+            file = open(f"Reciept_{randomNumber}.txt", "a")
+            file.write(f"======================================\nReciept ID: {randomNumber}\nTotal seats Booked: {totalSeats}\nSeats Booked: {seatsBooked}\n\nType Of Seat - Price - Runing Total\n")
+            break
 
     price = 0
     for result in results:
-        result = str(result).split())
+        result = str(result).split()
         resultTypePerson = result[1]
         resultTypePerson = resultTypePerson.replace("h","CONCESSION HOLDER").replace("a","ADULT").replace("c","CHILD").replace("s","STUDENT").replace(",","").replace("'","")
         resultPrice = result[3]
@@ -127,7 +141,7 @@ def receiptFunction(results,totalSeats, seatsBooked):
 
     file.write(f"\nTotal Price: {price}\n======================================\n\n\n\n")
     file.close()
-    print(f"you have booked {totalSeats}. This will cost ${price}\nA reciept will be sent to you soon.")
+    print(f"\nyou have booked {totalSeats}. This will cost ${price}\nA reciept will be sent to you soon\nYour reciept ID is: {randomNumber}")
 
 
 def cancelFunction():

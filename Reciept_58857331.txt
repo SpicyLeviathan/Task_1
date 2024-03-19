@@ -1,0 +1,16 @@
+======================================
+Reciept ID: 58857331
+Total seats Booked: 4
+Seats Booked: 1a, 5d, 3g, 8j
+
+Type Of Seat - Price - Runing Total
+ADULT - 30.0 - 30.0
+CHILD - 10.0 - 40.0
+STUDENT - 5.0 - 45.0
+CONCESSION HOLDER - 15.0 - 60.0
+
+Total Price: 60.0
+======================================
+
+
+

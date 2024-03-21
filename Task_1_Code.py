@@ -1,11 +1,17 @@
+# Importing extensions for the program to work
 import os
 import glob
 import random
+
+#Save directory path to a variable
 directory= os.getcwd()
 
+#Defines CLASS Booking
 class Booking:
 
+    #Defines METHOD Seating
     def seating(self,seats):
+        #Creates the array that contains the seating arrangement
         seats = [
         [0, 0, 0, 0, 1, 1, 0, 0, 1, 0],
         [0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
@@ -16,11 +22,16 @@ class Booking:
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 1, 0, 1, 0, 1, 0, 0, 0],
         ]
+        #Return array to the rest of the program
         return(seats)
 
+    #Defines METHOD printSeating
     def printSeating(self, seats):
+        #Print letters
         print("  A B C D E F G H I J")
+        #Creates variable ans sets it to 1
         rowNumber = 1
+        #For row in seats prints the row number and row. If value in array = 0 it prints - and if value = 1 it prints X
         for row in seats:
             print(f"{rowNumber} ", end='')
             rowNumber += 1
@@ -31,17 +42,21 @@ class Booking:
                     print('X', end=' ')
             print()
 
+    #Defines METHOD bookSeat
     def bookSeat(self):
+        #Gets the seats and prints them from the METHOD seating and printSeating
         print("\n\n\nCurrent seating plan:")
         seats = []
         seats = b.seating(seats)
         b.printSeating(seats)
+        #Exception handling. Try the user input and if incorect value is entered runs the except and prints the error statement and runs the METHOD bookSeat
         try:
             howManySeats= int(input("how many seats do you want to book? "))
         except (IndexError, ValueError):
             print("Invalid input format. Please use integers.")
             b.bookSeat()
         
+        #Creates the personPrices dictionary
         personPrices = {
             "adult": { 
                 "name": 'a',
@@ -61,22 +76,34 @@ class Booking:
             }
         }
 
+        #Creates an empty array
         results = []
 
+        #Makes sure that the selection is more than 0
         if howManySeats > 0:
+            #Calls the METHOD processingBooking
             b.processingBooking(results,personPrices,howManySeats,seats)
+        #If selection was less than 0
         else:
+            #Print error message and calls the METHOD bookSeat
             print("you have not entered an integer above 0. Please try again")
-            b.processingBooking()
+            b.bookSeat()
 
+    #Defines METHOD processingBooking
     def processingBooking(self, results,personPrices,howManySeats,seats):
 
+        #Converts variable into an integer
         howManySeats = int(howManySeats)
+        #Saves how many seats user wanted to book in a different variable for latter use
         totalSeats = howManySeats
+        #Creates an empty array
         seatsBooked = []
-        # Correcting the error by ensuring proper conversion
+        
+        #While howManySeats is greater than 0 it will keep iterating through the loop
         while howManySeats > 0:
+            #Gets user input for what seat they want to book
             selection = input("Choose a seat (e.g., 2D): ")
+            #
             typePersonInput = input("If seat is for adult type: A\nIf seat is for a child type: C\nIf seat is for a student type: S\nIf seat is for a concession holder type: H\nWho is seat for? ")
             print(selection[0])
             if not selection[0].isdigit():
@@ -100,9 +127,9 @@ class Booking:
                                     print("Seat booked successfully!\n")
                                     seatsBooked.append(selection)
                                     break
-                            else:
-                                print("Invalid type of person input. Please try again")
-                                continue  # Skip to the next iteration if typePersonInput is invalid
+                                else:
+                                    print("Invalid type of person input. Please try again")
+                                    continue  # Skip to the next iteration if typePersonInput is invalid
                         else:
                             print("Sorry, that seat is already taken.\n")
                     else:
@@ -133,7 +160,7 @@ class Booking:
 
         price = 0
         for result in results:
-            result = str(result).split()
+            result = str(results).split()
             resultTypePerson = result[1]
             resultTypePerson = resultTypePerson.replace("h","CONCESSION HOLDER").replace("a","ADULT").replace("c","CHILD").replace("s","STUDENT").replace(",","").replace("'","")
             resultPrice = result[3]
@@ -225,7 +252,7 @@ def programFunction():
             endFunction()
         
         case _:
-            print("\nIncorect entry please check your spelling and try again\n")
+            print("\nIncorrect entry please check your spelling and try again\n")
             programFunction()
 
 b = Booking()

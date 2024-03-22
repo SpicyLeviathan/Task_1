@@ -103,130 +103,192 @@ class Booking:
         while howManySeats > 0:
             #Gets user input for what seat they want to book
             selection = input("Choose a seat (e.g., 2D): ")
-            #
+            #Gets user input
             typePersonInput = input("If seat is for adult type: A\nIf seat is for a child type: C\nIf seat is for a student type: S\nIf seat is for a concession holder type: H\nWho is seat for? ")
+            #Print selection
             print(selection[0])
-            if not selection[0].isdigit():
 
+            #Checks if selection[0] is not a digit
+            if not selection[0].isdigit():
+                #Print error message and calls METHOD processingBooking
                 print("Invalid input format. Please use the format <RowNumber><ColumnLetter> (e.g., 2D).\n")
                 b.processingBooking(results,personPrices,howManySeats,seats)
-    
+            #If is a digit        
             else: 
+                #Tries the folowing code
                 try:
-                    row = int(selection[0]) - 1  # Converts the first character to row index
-                    col = ord(selection[1].upper()) - ord('A')  # Converts the letter to column index
+                    #Seperates the row and column index from the selection
+                    row = int(selection[0]) - 1
+                    col = ord(selection[1].upper()) - ord('A')
 
-                    if 0 <= row < len(seats) and 0 <= col < len(seats[0]):  # Check if the selection is within the range
+                    #Checks if selection is within the range of the array
+                    if 0 <= row < len(seats) and 0 <= col < len(seats[0]):
                         if seats[row][col] == 0:
-                            # Check if typePersonInput is in person prices
+                            #Check if typePersonInput is in person prices
                             for staff_id, record in personPrices.items():
                                 if typePersonInput.lower() in record["name"].split()[-1].lower():
+                                    #Change the item in array from 0 to 1
                                     seats[row][col] = 1
+                                    #Update the result array
                                     results.append(record)
+                                    #Subtracts 1 from the variable untill the while loop stops
                                     howManySeats -= 1
+                                    #Prints a message to say booking was succesfull and updates the array
                                     print("Seat booked successfully!\n")
                                     seatsBooked.append(selection)
+                                    #Stops the loop
                                     break
+                                #If item is not in record
                                 else:
+                                    #Print error message and continue on with program
                                     print("Invalid type of person input. Please try again")
-                                    continue  # Skip to the next iteration if typePersonInput is invalid
+                                    continue 
+                        #If does not equal 0  prints error message
                         else:
                             print("Sorry, that seat is already taken.\n")
+                    #If seat is out of array range print error message
                     else:
                         print("Invalid seat selection.\n")
+                #If code breaks in try prints error message
                 except (IndexError, ValueError):
                     print("Invalid input format. Please use the format <RowNumber><ColumnLetter> (e.g., 2D).\n")
 
+                #Print the seating plan
                 print("Updated seating plan:")
                 b.printSeating(seats)
         
+        #Calls METHOD receiptFunction
         b.receiptFunction(results, totalSeats, seatsBooked)
 
+    #Defines METHOD recieptFunction
     def receiptFunction(self, results, totalSeats, seatsBooked):
+        #Turns variable into string and removes unwated characters
         seatsBooked=str(seatsBooked).replace("'","").replace("[","").replace("]","")
+        #Gets a random number
         randomNumber = ''.join(random.choices('0123456789', k=8))
+        #Searches for all txt files and saves there names to a variable
         txtFiles = glob.glob(os.path.join(directory, "*.txt"))
         fileNames = [os.path.basename(txtFile) for txtFile in txtFiles]
+        #For fileName in fileNames it changes unwated characters and splits the name into parts
         for fileName in fileNames:
             fileName = fileName.replace(".","_")
             fileName = fileName.split("_")
+            #Gets the part of file name that has the reciept ID
             receiptID = int(fileName[1])
+            #Checks if any of the existing receipts have the same number as the randomly generated one
             if receiptID == int(randomNumber):
+                #Gets a new random number
                 randomNumber = ''.join(random.choices('0123456789', k=8))
+            #If doesnt already exist create a text file and adds information that we already have to it
             else:
                 file = open(f"Reciept_{randomNumber}.txt", "a")
                 file.write(f"======================================\nReciept ID: {randomNumber}\nTotal seats Booked: {totalSeats}\nSeats Booked: {seatsBooked}\n\nType Of Seat - Price - Runing Total\n")
                 break
-
+        
+        #Sets variable to equal 0
         price = 0
+        #For result in results it turns to a string and splits it
         for result in results:
             result = str(results).split()
+            #Gets the type of person from the string and replaces the placeholder letter with the full name
             resultTypePerson = result[1]
             resultTypePerson = resultTypePerson.replace("h","CONCESSION HOLDER").replace("a","ADULT").replace("c","CHILD").replace("s","STUDENT").replace(",","").replace("'","")
+            #Gets the price related to the type of person and removes unwated characters before tunring into a float
             resultPrice = result[3]
             resultPrice = str(resultPrice).replace("}","")
             resultPrice = float(resultPrice)
+            #Adds the price for the person to the total price
             price = price + resultPrice
+            #Adds the type of person, price for there ticket and running price to the ticket/reciept
             file.write(f"{resultTypePerson} - {resultPrice} - {price}\n")
 
+        #Writes total price to the ticket and closes the file
         file.write(f"\nTotal Price: {price}\n======================================\n\n\n\n")
         file.close()
+        #Prints how many seats the customer booked, the total cost and the receipt ID
         print(f"\nyou have booked {totalSeats}. This will cost ${price}\nA reciept will be sent to you soon\nYour reciept ID is: {randomNumber}")
 
+#Defines CLASS Cancel
 class Cancel:
     
+    #Defines METHOD userInput
     def userInput(self):
+        #Tries the user input
         try:
             userInput = int(input("Please enter your ticket ID: "))
+        #If encounters an error print error message and call METHOD userInput
         except (IndexError, ValueError):
             print("Invalid input format. Please use integers.")
             c.userInput()
+        #Calls METHOD findTicket
         c.findTicket(userInput)
 
+    #Defines METHOD findTicket
     def findTicket(self, userInput):
+        #Search for all text files in folder and saves the name into a variable
         txtFiles = glob.glob(os.path.join(directory, "*.txt"))
         fileNames = [os.path.basename(txtFile) for txtFile in txtFiles]
+        #For fileName in fileNames it changes unwated characters and splits the name into parts and saves original name to a variable
         for fileName in fileNames:
             originalFileName = fileName
             fileName = fileName.replace(".","_")
             fileName = fileName.split("_")
-            print(fileName[1])
+            #Gets the part of file name that has the reciept ID
             recieptID = int(fileName[1])
+            #Checks if receipt ID equals users input
             if recieptID == userInput:
+                #Calls METHOD getsSeats and stops the loop
                 c.getSeats(originalFileName)
                 break
+            #If doesnt equal userinput continue the program
             else:
                 continue
+        #Print error message and calls FUNCTION programFunction
         print(f"There is no ticket with ID of '{userInput}'")
         programFunction()
 
+    #Defines METHOD getSeats
     def getSeats(self,originalFileName):
+        #Opens file in read mode and reades the lines
         file = open(originalFileName,"r")
         lines = file.readlines()
         file.close()
+        #Saves the fourth line of the txt file
         fourthLine = lines[3]
         fourthLine = fourthLine.split(":")
+        #Seperates the seats from the rest of information on that line
         ticketSeats = fourthLine[1].replace(" ","")
         ticketSeats = ticketSeats.replace("'","").replace("\n'","")
+        #Calls METHOD vacateSeats
         c.vacateSeats(ticketSeats, originalFileName)
     
+    #Defines METHOD vacateSeats
     def vacateSeats(self, ticketSeats, originalFileName):
+        #Gets seats array from METHOD seating in class booking
         seats = []
         seats = b.seating(seats)
+        #Tunrs into a string and splits them into individual seats
         ticketSeats = str(ticketSeats).split(",")
+        #For ticketseat in ticketSeats
         for ticketseat in ticketSeats:
-            row = int(ticketseat[0]) - 1  # Converts the first character to row index
-            col = ord(ticketseat[1].upper()) - ord('A')  # Converts the letter to column index
-            if 0 <= row < len(seats) and 0 <= col < len(seats[0]):  # Check if the selection is within the range
+            #Seperates the row and column index from the selection
+            row = int(ticketseat[0]) - 1 
+            col = ord(ticketseat[1].upper()) - ord('A')
+            #Checks if selection is within the range of the array
+            if 0 <= row < len(seats) and 0 <= col < len(seats[0]):
+                #Checks if item in array is equal to 1
                 if seats[row][col] == 1:
+                    #Change the item in array from 1 to 0
                     seats[row][col] = 0
-                    break
+                #If seat is not equal to 1 print error message and continue the program
                 else:
                     print("Seat is already empty. Continuing onto next seat\n")
                     continue
+            #If not in array print error message and continue with program
             else:
                 print("Sorry, we encounted an error. Continuing to next seat.\n")
                 continue
+        #Remove the text file from folder
         os.remove(originalFileName)
 
 

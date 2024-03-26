@@ -13,7 +13,7 @@ class Booking:
     def seating(self,seats):
         #Creates the array that contains the seating arrangement
         seats = [
-        [0, 0, 0, 0, 1, 1, 0, 0, 1, 0],
+        [1, 0, 0, 0, 1, 1, 0, 0, 1, 0],
         [0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
         [0, 1, 0, 0, 0, 1, 0, 1, 0, 0],
         [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
@@ -41,7 +41,6 @@ class Booking:
                 else:
                     print('X', end=' ')
             print()
-
     #Defines METHOD bookSeat
     def bookSeat(self):
         #Gets the seats and prints them from the METHOD seating and printSeating
@@ -177,16 +176,18 @@ class Booking:
             receiptID = int(fileName[1])
             #Checks if any of the existing receipts have the same number as the randomly generated one
             if receiptID == int(randomNumber):
-                #Gets a new random number
-                randomNumber = ''.join(random.choices('0123456789', k=8))
-            #If doesnt already exist create a text file and adds information that we already have to it
+                b.receiptFunction()
+            ###########################################################################################################################################
             else:
-                file = open(f"Reciept_{randomNumber}.txt", "a")
-                file.write(f"======================================\nReciept ID: {randomNumber}\nTotal seats Booked: {totalSeats}\nSeats Booked: {seatsBooked}\n\nType Of Seat - Price - Runing Total\n")
-                break
+                continue
         
         #Sets variable to equal 0
         price = 0
+        
+        ###########################################################################################################################################
+        file = open(f"Reciept_{randomNumber}.txt", "w")
+        file.write(f"======================================\nReciept ID: {randomNumber}\nTotal seats Booked: {totalSeats}\nSeats Booked: {seatsBooked}\n\nType Of Seat - Price - Runing Total\n")
+
         #For result in results it turns to a string and splits it
         for result in results:
             result = str(results).split()
@@ -195,7 +196,7 @@ class Booking:
             resultTypePerson = resultTypePerson.replace("h","CONCESSION HOLDER").replace("a","ADULT").replace("c","CHILD").replace("s","STUDENT").replace(",","").replace("'","")
             #Gets the price related to the type of person and removes unwated characters before tunring into a float
             resultPrice = result[3]
-            resultPrice = str(resultPrice).replace("}","")
+            resultPrice = str(resultPrice).replace("}","").replace(",","").replace("'","").replace("]","")
             resultPrice = float(resultPrice)
             #Adds the price for the person to the total price
             price = price + resultPrice
@@ -207,6 +208,8 @@ class Booking:
         file.close()
         #Prints how many seats the customer booked, the total cost and the receipt ID
         print(f"\nyou have booked {totalSeats}. This will cost ${price}\nA reciept will be sent to you soon\nYour reciept ID is: {randomNumber}")
+
+        programFunction()
 
 #Defines CLASS Cancel
 class Cancel:
@@ -290,6 +293,8 @@ class Cancel:
                 continue
         #Remove the text file from folder
         os.remove(originalFileName)
+
+        programFunction()
 
 
         

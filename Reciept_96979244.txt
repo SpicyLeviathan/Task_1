@@ -1,0 +1,14 @@
+======================================
+Reciept ID: 96979244
+Total seats Booked: 2
+Seats Booked: 1b, 1c
+
+Type Of Seat - Price - Runing Total
+ADULT - 30.0 - 30.0
+ADULT - 30.0 - 60.0
+
+Total Price: 60.0
+======================================
+
+
+

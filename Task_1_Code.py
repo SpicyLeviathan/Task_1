@@ -177,14 +177,13 @@ class Booking:
             #Checks if any of the existing receipts have the same number as the randomly generated one
             if receiptID == int(randomNumber):
                 b.receiptFunction()
-            ###########################################################################################################################################
+
             else:
                 continue
         
         #Sets variable to equal 0
         price = 0
         
-        ###########################################################################################################################################
         file = open(f"Reciept_{randomNumber}.txt", "w")
         file.write(f"======================================\nReciept ID: {randomNumber}\nTotal seats Booked: {totalSeats}\nSeats Booked: {seatsBooked}\n\nType Of Seat - Price - Runing Total\n")
 
@@ -294,20 +293,19 @@ class Cancel:
         #Remove the text file from folder
         os.remove(originalFileName)
 
-        programFunction()
+        programFunction()       
 
-
-        
-
-
+#Defines function to stop the program
 def endFunction():
     exit()
 
+#Defines function that starts the program
 def programFunction():
     print("\n\n\n\n\nTo book a ticket type 'Booking' \nTo cancel a booking type 'Cancel' \nTo end program type 'End'\n")
     userInput = input("What would you like to do? ")
     userInput = userInput.lower()
 
+    #Checking if user input matches and running related code
     match userInput:
         case "booking":
             b.bookSeat()
